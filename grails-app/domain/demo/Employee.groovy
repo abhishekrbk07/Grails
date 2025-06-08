@@ -6,9 +6,9 @@ class Employee {
     String department
 
     static constraints = {
-        name nullable: false
+        name nullable: false, minSize: 2, maxSize: 20, matches: /^[a-zA-Z].*/
         email nullable: false, email: true
-        department nullable: true
+        department nullable: true, inList: ['Software Engineer', 'Senior Software Engineer', 'Marketing', 'IT', 'HR', 'Finance', 'Admin', 'Manager']
     }
-
 }
+

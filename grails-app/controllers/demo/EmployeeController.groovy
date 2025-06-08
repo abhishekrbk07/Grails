@@ -113,6 +113,5 @@ class EmployeeController {
         redirect action: 'index'
     }
 
-
 }
 
