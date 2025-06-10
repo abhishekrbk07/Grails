@@ -53,3 +53,8 @@ select * FROM department;
 
 ALTER TABLE employee DROP COLUMN version;
 
+INSERT INTO device (name, version) VALUES
+('Laptop', 0),
+('Monitor', 0),
+('Headphone', 0),
+('Mouse', 0);

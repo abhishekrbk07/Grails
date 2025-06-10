@@ -20,10 +20,9 @@ class EmployeeController {
     }
 
     def save() {
-        // Remove the department param so Grails doesn't try to use it
-        def cleanParams = params.findAll { it.key != 'department' }
+        def cleanParams = params.findAll { it.key != 'department' && it.key != 'devices' }
         def employee = new Employee(cleanParams)
-        def dept = Department.findByName(params.department)  // Look up department by name
+        def dept = Department.findByName(params.department)
         if (!dept) {
             flash.error = "Invalid department selected!"
             render view: 'create', model: [
@@ -34,23 +33,21 @@ class EmployeeController {
             return
         }
         employee.department = dept
-
         employee.name = sanitize(employee.name)
         employee.designation = sanitize(employee.designation)
 
-        employeeService.create(employee)
-        if (employee.hasErrors()) {
+        def selectedDevices = params.list('devices')
+        if (employeeService.create(employee, selectedDevices)) {
+            flash.message = "Employee created successfully."
+            redirect action: 'index'
+        } else {
             flash.error = employee.errors.allErrors.collect { it.defaultMessage }.join('<br>')
             render view: 'create', model: [
                     employee: employee,
                     departmentList: Department.list(),
                     deviceList: Device.list()
             ]
-            return
         }
-
-        flash.message = "Employee created successfully."
-        redirect action: 'index'
     }
 
     def edit(Long id) {
@@ -60,10 +57,12 @@ class EmployeeController {
             redirect action: 'index'
             return
         }
+        def assignedDevices = employee.deviceAssignments*.device?.name
         render view: 'edit', model: [
                 employee: employee,
                 departmentList: Department.list(),
-                deviceList: Device.list()
+                deviceList: Device.list(),
+                assignedDevices: assignedDevices
         ]
     }
 
@@ -74,36 +73,37 @@ class EmployeeController {
             redirect action: 'index'
             return
         }
-        employee.properties = params
+        def cleanParams = params.findAll { it.key != 'department' && it.key != 'devices' }
+        employee.properties = cleanParams
 
-        def dept = Department.findByName(params.department)  // Look up department by name
+        def dept = Department.findByName(params.department)
         if (!dept) {
             flash.error = "Invalid department selected!"
             render view: 'edit', model: [
                     employee: employee,
                     departmentList: Department.list(),
-                    deviceList: Device.list()
+                    deviceList: Device.list(),
+                    assignedDevices: employee.deviceAssignments*.device?.name
             ]
             return
         }
         employee.department = dept
-
         employee.name = sanitize(employee.name)
         employee.designation = sanitize(employee.designation)
 
-        employeeService.update(employee)
-        if (employee.hasErrors()) {
+        def selectedDevices = params.list('devices')
+        if (employeeService.update(employee, selectedDevices)) {
+            flash.message = "Employee updated successfully."
+            redirect action: 'index'
+        } else {
             flash.error = employee.errors.allErrors.collect { it.defaultMessage }.join('<br>')
             render view: 'edit', model: [
                     employee: employee,
                     departmentList: Department.list(),
-                    deviceList: Device.list()
+                    deviceList: Device.list(),
+                    assignedDevices: employee.deviceAssignments*.device?.name
             ]
-            return
         }
-
-        flash.message = "Employee updated successfully."
-        redirect action: 'index'
     }
 
     def delete(Long id) {
@@ -116,7 +116,6 @@ class EmployeeController {
         redirect action: 'index'
     }
 
-    // Basic XSS sanitizer for form fields
     private static String sanitize(String input) {
         if (input == null) return null
         return input.replaceAll(/[<>]/, '')

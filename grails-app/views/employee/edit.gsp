@@ -2,9 +2,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Add Employee</title>
+    <title>Edit Employee</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <!-- Google Fonts: Poppins -->
+    <!-- Google Fonts: Poppins & Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600;800&display=swap" rel="stylesheet"/>
     <style>
     body {
@@ -96,11 +96,12 @@
 </head>
 <body>
 <div class="card p-4">
-    <h2 class="mb-4 text-center">Add New Employee</h2>
+    <h2 class="mb-4 text-center">Edit Employee</h2>
     <g:if test="${flash.error}">
         <div class="alert alert-danger">${flash.error}</div>
     </g:if>
-    <g:form controller="employee" action="save" method="POST" class="needs-validation" novalidate="">
+    <g:form controller="employee" action="update" id="${employee?.id}" method="POST" class="needs-validation" novalidate="">
+        <input type="hidden" name="id" value="${employee?.id}"/>
         <div class="mb-3">
             <label class="form-label">Full Name</label>
             <input type="text" name="name" value="${employee?.name ?: ''}" required maxlength="100" class="form-control" pattern="^[a-zA-Z\s]+$"/>
@@ -114,42 +115,34 @@
         <div class="mb-3">
             <label class="form-label">Department</label>
             <select name="department" required class="form-select">
-                <option value="" disabled selected>Select Department</option>
-                <option value="HR">HR</option>
-                <option value="Analytics">Analytics</option>
-                <option value="Data">Data</option>
-                <option value="Care">Care</option>
-                <option value="Admin">Admin</option>
-                <option value="Finance">Finance</option>
-                <option value="IT">IT</option>
+                <option value="" disabled>Select Department</option>
+                <option value="HR" ${employee?.department?.name == 'HR' ? 'selected' : ''}>HR</option>
+                <option value="Analytics" ${employee?.department?.name == 'Analytics' ? 'selected' : ''}>Analytics</option>
+                <option value="Data" ${employee?.department?.name == 'Data' ? 'selected' : ''}>Data</option>
+                <option value="Care" ${employee?.department?.name == 'Care' ? 'selected' : ''}>Care</option>
+                <option value="Admin" ${employee?.department?.name == 'Admin' ? 'selected' : ''}>Admin</option>
+                <option value="Finance" ${employee?.department?.name == 'Finance' ? 'selected' : ''}>Finance</option>
+                <option value="IT" ${employee?.department?.name == 'IT' ? 'selected' : ''}>IT</option>
             </select>
             <div class="invalid-feedback">Please select a department.</div>
         </div>
         <div class="mb-3">
             <label class="form-label">Devices</label>
-            <div class="form-check mb-1">
-                <input class="form-check-input" type="checkbox" name="devices" value="Laptop" id="devLaptop">
-                <label class="form-check-label" for="devLaptop">Laptop</label>
-            </div>
-            <div class="form-check mb-1">
-                <input class="form-check-input" type="checkbox" name="devices" value="Monitor" id="devMonitor">
-                <label class="form-check-label" for="devMonitor">Monitor</label>
-            </div>
-            <div class="form-check mb-1">
-                <input class="form-check-input" type="checkbox" name="devices" value="Headphone" id="devHeadphone">
-                <label class="form-check-label" for="devHeadphone">Headphone</label>
-            </div>
-            <div class="form-check mb-1">
-                <input class="form-check-input" type="checkbox" name="devices" value="Mouse" id="devMouse">
-                <label class="form-check-label" for="devMouse">Mouse</label>
-            </div>
+            <g:each in="${deviceList}" var="dev">
+                <div class="form-check mb-1">
+                    <input class="form-check-input" type="checkbox" name="devices"
+                           value="${dev.name}" id="dev${dev.name}"
+                        ${assignedDevices?.contains(dev.name) ? 'checked' : ''}/>
+                    <label class="form-check-label" for="dev${dev.name}">${dev.name}</label>
+                </div>
+            </g:each>
         </div>
         <div class="mb-3">
             <label class="form-label">Joining Date</label>
             <g:datePicker name="joiningDate" value="${employee?.joiningDate}" precision="day" required="true" class="form-control"/>
             <div class="invalid-feedback">Please provide the joining date.</div>
         </div>
-        <button class="btn btn-primary w-100 mt-3" type="submit">Add Employee</button>
+        <button class="btn btn-primary w-100 mt-3" type="submit">Update Employee</button>
     </g:form>
 </div>
 <script>
