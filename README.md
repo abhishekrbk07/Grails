@@ -1,23 +1,55 @@
-## Grails 6.2.3 Documentation
+-- 1. Department Table
+CREATE TABLE department (
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(100) NOT NULL UNIQUE
+);
 
-- [User Guide](https://docs.grails.org/6.2.3/guide/index.html)
-- [API Reference](https://docs.grails.org/6.2.3/api/index.html)
-- [Grails Guides](https://guides.grails.org/index.html)
----
+-- 2. Device Table
+CREATE TABLE device (
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(50) NOT NULL UNIQUE
+);
 
-## Feature scaffolding documentation
+-- 3. Employee Table
+CREATE TABLE employee (
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(100) NOT NULL,
+designation VARCHAR(100) NOT NULL,
+joining_date DATE NOT NULL,
+department_id INT NOT NULL,
+FOREIGN KEY (department_id) REFERENCES department(id)
+);
 
-- [Grails Scaffolding Plugin documentation](https://grails.github.io/scaffolding/latest/groovydoc/)
+-- 4. DeviceAssignment Table (Join Table)
+CREATE TABLE device_assignment (
+id INT AUTO_INCREMENT PRIMARY KEY,
+employee_id INT NOT NULL,
+device_id INT NOT NULL,
+assigned_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+UNIQUE KEY uq_employee_device (employee_id, device_id),
+FOREIGN KEY (employee_id) REFERENCES employee(id),
+FOREIGN KEY (device_id) REFERENCES device(id)
+);
+INSERT INTO department (name) VALUES
+('HR'),
+('Analytics'),
+('Data'),
+('Care'),
+('Admin'),
+('Finance'),
+('IT');
 
-- [https://grails-fields-plugin.github.io/grails-fields/latest/guide/index.html](https://grails-fields-plugin.github.io/grails-fields/latest/guide/index.html)
+ALTER TABLE department DROP COLUMN version;
+INSERT INTO department (name) VALUES
+('HR'),
+('Analytics'),
+('Data'),
+('Care'),
+('Admin'),
+('Finance'),
+('IT');
 
-## Feature asset-pipeline-grails documentation
+select * FROM department;
 
-- [Grails Asset Pipeline Core documentation](https://www.asset-pipeline.com/manual/)
-
-## Feature geb documentation
-
-- [Grails Geb Functional Testing for Grails documentation](https://github.com/grails3-plugins/geb#readme)
-
-- [https://www.gebish.org/manual/current/](https://www.gebish.org/manual/current/)
+ALTER TABLE employee DROP COLUMN version;
 
