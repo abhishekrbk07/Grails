@@ -1,0 +1,59 @@
+package demo
+
+class UserController {
+
+    UserService userService
+
+    def register() {
+        render view: 'register'
+    }
+
+    def saveRegister() {
+        String username = params.username?.trim()
+        String password = params.password
+        String role = params.role
+
+        if (!username || !password || !role) {
+            flash.error = "All fields are required."
+            render view: 'register'
+            return
+        }
+        def user = userService.registerUser(username, password, role)
+        if (!user) {
+            flash.error = "Username already exists."
+            render view: 'register'
+            return
+        }
+        flash.message = "Registration successful! Please log in."
+        redirect controller: 'user', action: 'login'
+    }
+
+    def login() {
+        render view: 'login'
+    }
+
+    def doLogin() {
+        String username = params.username?.trim()
+        String password = params.password
+
+        def user = userService.authenticate(username, password)
+        if (!user) {
+            flash.error = "Invalid credentials"
+            render view: 'login'
+            return
+        }
+        // Generate JWT
+        String jwt = JwtUtil.generateToken(user)
+        session.jwt = jwt // Save in session for UI testing (or set as cookie/header for SPA/API)
+        session.userRole = user.role
+        session.username = user.username
+
+        flash.message = "Welcome, ${user.username}!"
+        redirect controller: 'employee', action: 'index'
+    }
+
+    def logout() {
+        session.invalidate()
+        redirect action: 'login'
+    }
+}
