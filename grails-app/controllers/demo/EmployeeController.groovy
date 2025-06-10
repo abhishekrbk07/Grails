@@ -1,5 +1,10 @@
 package demo
 
+import com.aspose.cells.Workbook
+import com.aspose.cells.Worksheet
+import com.aspose.cells.SaveFormat
+import java.text.SimpleDateFormat
+
 class EmployeeController {
 
     EmployeeService employeeService
@@ -127,5 +132,36 @@ class EmployeeController {
     private static String sanitize(String input) {
         if (input == null) return null
         return input.replaceAll(/[<>]/, '')
+    }
+
+    def exportExcel() {
+        def employees = Employee.list(sort: "name")
+        def workbook = new Workbook()
+        Worksheet ws = workbook.worksheets[0]
+        ws.name = "Employees"
+
+        // Header
+        def headers = ['Name', 'Designation', 'Department', 'Joining Date', 'Devices']
+        headers.eachWithIndex { h, i -> ws.getCells().get(0, i).putValue(h) }
+
+        def sdf = new SimpleDateFormat("yyyy-MM-dd")
+
+        employees.eachWithIndex { emp, idx ->
+            ws.getCells().get(idx + 1, 0).putValue(emp.name)
+            ws.getCells().get(idx + 1, 1).putValue(emp.designation)
+            ws.getCells().get(idx + 1, 2).putValue(emp.department?.name ?: "")
+            def joinDateString = ""
+            if (emp.joiningDate) {
+                joinDateString = sdf.format(emp.joiningDate)
+            }
+            ws.getCells().get(idx + 1, 3).putValue(joinDateString)
+            def devices = emp.deviceAssignments?.collect { it.device?.name }?.join(", ") ?: ""
+            ws.getCells().get(idx + 1, 4).putValue(devices)
+        }
+
+        response.contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        response.setHeader("Content-Disposition", "attachment; filename=employees.xlsx")
+        workbook.save(response.outputStream, SaveFormat.XLSX)
+        response.outputStream.flush()
     }
 }

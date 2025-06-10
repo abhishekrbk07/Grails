@@ -9,6 +9,7 @@ class UrlMappings {
         "/employee/update/$id"(controller: 'employee', action: 'update')
         "/employee/delete/$id"(controller: 'employee', action: 'delete')
         "/employee/pieChart"(controller: 'employee', action: 'pieChart')
+        "/employee/exportExcel"(controller: 'employee', action: 'exportExcel')
 
         "/"(controller: 'employee', action: 'index')
         "500"(view: '/error')

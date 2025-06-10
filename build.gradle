@@ -30,6 +30,10 @@ repositories {
     maven { url "https://repo.grails.org/grails/core/" }
 }
 
+repositories {
+    mavenCentral()
+    maven { url 'https://repository.aspose.com/repo/' }
+}
 configurations {
     all {
         resolutionStrategy.eachDependency { DependencyResolveDetails details->
@@ -61,6 +65,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-tomcat"
     implementation "org.springframework.boot:spring-boot-starter-validation"
     implementation "org.graalvm.js:js:22.3.0"
+    implementation "com.aspose:aspose-cells:24.4"
     compileOnly "io.micronaut:micronaut-inject-groovy"
     console "org.grails:grails-console"
     runtimeOnly "com.bertramlabs.plugins:asset-pipeline-grails:4.5.1"

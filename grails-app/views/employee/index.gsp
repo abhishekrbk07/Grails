@@ -208,5 +208,9 @@
     <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="#fff" class="me-2" viewBox="0 0 16 16"><path d="M15.985 8.5A7.5 7.5 0 1 1 8 .015V8.5h7.485z"/><path d="M8 1a7 7 0 1 0 7 7H8V1z" fill="#ffc463"/></svg>
     View Department Chart
 </a>
+<g:link controller="employee" action="exportExcel" class="export-btn text-decoration-none ms-2">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#fff" class="me-1" viewBox="0 0 24 24"><path d="M19 2H8c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 10H8V4h11v8zm-7 6v-2H8c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2v-6c0-1.1-.9-2-2-2h-4zm0 2h4v6H8v-6h4z"/></svg>
+    Export to Excel
+</g:link>
 </body>
 </html>
