@@ -134,6 +134,36 @@
         z-index: 1;
     }
     .emp-card .emp-name, .emp-card .emp-detail, .emp-card .badge, .emp-card .emp-actions { position: relative; z-index: 2; }
+
+    /* Floating Chart Button Styles */
+    .floating-chart-btn {
+        position: fixed;
+        right: 36px;
+        bottom: 38px;
+        z-index: 300;
+        display: flex;
+        align-items: center;
+        padding: 15px 28px 15px 17px;
+        font-size: 1.11rem;
+        font-family: 'Poppins',sans-serif;
+        font-weight: 700;
+        background: linear-gradient(93deg, #ff7f50 48%, #4e5bf2 100%);
+        color: #fff !important;
+        border-radius: 33px;
+        box-shadow: 0 6px 24px #b5c2db68, 0 2.5px 8px #dbeafe;
+        border: none;
+        transition: background 0.16s, transform 0.13s, box-shadow 0.13s;
+        text-decoration: none;
+    }
+    .floating-chart-btn:hover {
+        background: linear-gradient(93deg, #4e5bf2 60%, #ff7f50 100%);
+        transform: scale(1.07) translateY(-2.5px);
+        box-shadow: 0 12px 32px #a2b6ee50;
+        color: #fff !important;
+    }
+    @media (max-width: 600px) {
+        .floating-chart-btn { right: 10px; bottom: 16px; font-size: .99rem; padding: 12px 16px 12px 13px; }
+    }
     </style>
 </head>
 <body>
@@ -174,5 +204,9 @@
         </g:each>
     </div>
 </div>
+<a href="${createLink(controller:'employee', action:'pieChart')}" class="floating-chart-btn" title="View Employee Department Pie Chart">
+    <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="#fff" class="me-2" viewBox="0 0 16 16"><path d="M15.985 8.5A7.5 7.5 0 1 1 8 .015V8.5h7.485z"/><path d="M8 1a7 7 0 1 0 7 7H8V1z" fill="#ffc463"/></svg>
+    View Department Chart
+</a>
 </body>
 </html>

@@ -11,6 +11,14 @@ class EmployeeController {
         render view: 'index', model: [employeeList: employeeList]
     }
 
+    // Pie chart action: employees by department
+    def pieChart() {
+        def deptCountMap = Department.list().collectEntries { dept ->
+            [(dept.name): dept.employees?.size() ?: 0]
+        }
+        render view: 'pieChart', model: [deptCountMap: deptCountMap]
+    }
+
     def create() {
         render view: 'create', model: [
                 employee: new Employee(),
