@@ -4,114 +4,121 @@ class EmployeeController {
 
     EmployeeService employeeService
 
-    static responseFormats = ['json']
+    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     def index() {
-        def employeeList = employeeService.getEmployeeList()
-        if (request.format == 'json') {
-            respond employeeList
-        } else {
-            render view: 'index', model: [employeeList: employeeList]
-        }
-    }
-
-    def show(Long id) {
-        def emp = employeeService.getEmployeeById(id)
-        if (emp) {
-            respond emp
-        } else {
-            render status: 404
-        }
+        def employeeList = employeeService.listAll()
+        render view: 'index', model: [employeeList: employeeList]
     }
 
     def create() {
-        render view: 'create'
+        render view: 'create', model: [
+                employee: new Employee(),
+                departmentList: Department.list(),
+                deviceList: Device.list()
+        ]
     }
 
     def save() {
-        def emp
-
-        if (request.format == 'json' || request.JSON) {
-            emp = new Employee(request.JSON)
-        } else {
-            emp = new Employee(params)
+        // Remove the department param so Grails doesn't try to use it
+        def cleanParams = params.findAll { it.key != 'department' }
+        def employee = new Employee(cleanParams)
+        def dept = Department.findByName(params.department)  // Look up department by name
+        if (!dept) {
+            flash.error = "Invalid department selected!"
+            render view: 'create', model: [
+                    employee: employee,
+                    departmentList: Department.list(),
+                    deviceList: Device.list()
+            ]
+            return
         }
+        employee.department = dept
 
-        if (emp.validate()) {
-            employeeService.saveEmployee(emp)
-            if (request.format == 'json') {
-                respond emp
-            } else {
-                redirect action: 'index'
-            }
-        } else {
-            if (request.format == 'json') {
-                respond emp.errors, status: 400
-            } else {
-                render view: 'create', model: [employee: emp]
-            }
-        }
-    }
+        employee.name = sanitize(employee.name)
+        employee.designation = sanitize(employee.designation)
 
-    def edit(Long id) {
-        def emp = employeeService.getEmployeeById(id)
-        if (emp) {
-            render view: 'edit', model: [employee: emp]
-        } else {
-            render status: 404
-        }
-    }
-
-    def update() {
-        Long id = params.long('id')
-        Employee emp = employeeService.getEmployeeById(id)
-
-        if (emp == null) {
-            response.status = 404
+        employeeService.create(employee)
+        if (employee.hasErrors()) {
+            flash.error = employee.errors.allErrors.collect { it.defaultMessage }.join('<br>')
+            render view: 'create', model: [
+                    employee: employee,
+                    departmentList: Department.list(),
+                    deviceList: Device.list()
+            ]
             return
         }
 
-        emp.name = params.get('name')
-        emp.email = params.get('email')
-        emp.department = params.get('department')
-
-        if (emp.validate()) {
-            employeeService.saveEmployee(emp)
-            if (request.format == 'json') {
-                respond emp
-            } else {
-                redirect action: 'index'
-            }
-        } else {
-            if (request.format == 'json') {
-                respond emp.errors, status: 400
-            } else {
-                render view: 'edit', model: [employee: emp]
-            }
-        }
-    }
-
-
-    def delete() {
-        Long id = params.long('id')
-        println "Attempting to delete employee with ID: $id"
-
-        if (!id) {
-            flash.message = "Invalid employee ID."
-            redirect action: 'index'
-            return
-        }
-
-        boolean deleted = employeeService.deleteEmployee(id)
-
-        if (deleted) {
-            flash.message = "Employee deleted successfully."
-        } else {
-            flash.message = "Employee not found or could not be deleted."
-        }
-
+        flash.message = "Employee created successfully."
         redirect action: 'index'
     }
 
-}
+    def edit(Long id) {
+        def employee = employeeService.getById(id)
+        if (!employee) {
+            flash.error = "Employee not found."
+            redirect action: 'index'
+            return
+        }
+        render view: 'edit', model: [
+                employee: employee,
+                departmentList: Department.list(),
+                deviceList: Device.list()
+        ]
+    }
 
+    def update(Long id) {
+        def employee = employeeService.getById(id)
+        if (!employee) {
+            flash.error = "Employee not found."
+            redirect action: 'index'
+            return
+        }
+        employee.properties = params
+
+        def dept = Department.findByName(params.department)  // Look up department by name
+        if (!dept) {
+            flash.error = "Invalid department selected!"
+            render view: 'edit', model: [
+                    employee: employee,
+                    departmentList: Department.list(),
+                    deviceList: Device.list()
+            ]
+            return
+        }
+        employee.department = dept
+
+        employee.name = sanitize(employee.name)
+        employee.designation = sanitize(employee.designation)
+
+        employeeService.update(employee)
+        if (employee.hasErrors()) {
+            flash.error = employee.errors.allErrors.collect { it.defaultMessage }.join('<br>')
+            render view: 'edit', model: [
+                    employee: employee,
+                    departmentList: Department.list(),
+                    deviceList: Device.list()
+            ]
+            return
+        }
+
+        flash.message = "Employee updated successfully."
+        redirect action: 'index'
+    }
+
+    def delete(Long id) {
+        def deleted = employeeService.delete(id)
+        if (!deleted) {
+            flash.error = "Could not delete employee."
+        } else {
+            flash.message = "Employee deleted."
+        }
+        redirect action: 'index'
+    }
+
+    // Basic XSS sanitizer for form fields
+    private static String sanitize(String input) {
+        if (input == null) return null
+        return input.replaceAll(/[<>]/, '')
+    }
+}

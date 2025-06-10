@@ -2,13 +2,22 @@ package demo
 
 class Employee {
     String name
-    String email
-    String department
+    String designation
+    Date joiningDate
+
+    static belongsTo = [department: Department]
+    static hasMany = [deviceAssignments: DeviceAssignment]
 
     static constraints = {
-        name nullable: false, minSize: 2, maxSize: 20, matches: /^[a-zA-Z].*/
-        email nullable: false, email: true
-        department nullable: true, inList: ['Software Engineer', 'Senior Software Engineer', 'Marketing', 'IT', 'HR', 'Finance', 'Admin', 'Manager']
+        name blank: false, maxSize: 100, matches: /^[a-zA-Z\s]+$/
+        designation blank: false, maxSize: 100
+        joiningDate nullable: false
+        department nullable: false
     }
-}
 
+    static mapping = {
+        version false  // If you don't want a version column
+    }
+
+    String toString() { name }
+}

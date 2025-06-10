@@ -2,28 +2,14 @@ package demo
 
 class UrlMappings {
     static mappings = {
-        // REST-style API mappings
-        "/employee"(controller: 'employee', parseRequest: true) {
-            action = [GET: 'index', POST: 'save']
-        }
-        "/employee/$id"(controller: 'employee') {
-            action = [GET: 'show', PUT: 'update']
-        }
-
+        "/employee"(controller: 'employee', action: 'index')
         "/employee/create"(controller: 'employee', action: 'create')
+        "/employee/save"(controller: 'employee', action: 'save')
         "/employee/edit/$id"(controller: 'employee', action: 'edit')
-        "/employee/update"(controller: 'employee', action: 'update', method: "POST")
-        "/employee/deleteConfirmed"(controller: 'employee', action: 'delete', method: "POST")
-        "/employeeDevice"(controller: 'employeeDeviceAssignment', parseRequest: true) {
-            action = [GET: 'index', POST: 'save']
-        }
-        "/employeeDevice/createDevice"(controller: 'employeeDeviceAssignment', action: 'createDevice')
-        "/employeeDevice/$id"(controller: 'employeeDeviceAssignment') {
-            action = [GET: 'show', DELETE: 'delete']
-        }
-
-        "/"(controller: "employee", action: "index")
-        "500"(view:'/error')
-        "404"(view:'/notFound')
+        "/employee/update/$id"(controller: 'employee', action: 'update')
+        "/employee/delete/$id"(controller: 'employee', action: 'delete')
+        "/"(controller: 'employee', action: 'index')
+        "500"(view: '/error')
+        "404"(view: '/notFound')
     }
 }

@@ -5,43 +5,54 @@ import grails.gorm.transactions.Transactional
 @Transactional
 class EmployeeService {
 
-    List<Map> getEmployeeList() {
-        def employees = Employee.list()  // Fetch all Employee records
-        return employees.collect { emp ->
+    List<Employee> listAll() {
+        Employee.list(sort: "name")
+    }
 
-            // Find the device assignment for the current employee
-            def assignment = EmployeeDeviceAssignment.findByEmployee(emp)
+    Employee getById(Long id) {
+        Employee.get(id)
+    }
 
-            // Return a map containing employee details + device name (if assigned)
-            [
-                    id         : emp.id,
-                    name       : emp.name,
-                    email      : emp.email,
-                    department : emp.department,
-                    deviceName : assignment?.deviceEntry?.name  // Safely access device name
-            ]
+    // Uniqueness check on name (excluding self on update)
+    boolean isNameUnique(String name, Long excludeId = null) {
+        if (excludeId) {
+            Employee.countByNameAndIdNotEqual(name, excludeId) == 0
+        } else {
+            Employee.countByName(name) == 0
         }
     }
 
-    Employee getEmployeeById(Long id) {
-        return Employee.get(id)
+    // Create employee, apply validation and uniqueness check
+    void create(Employee employee) {
+        if (!isNameUnique(employee.name)) {
+            employee.errors.rejectValue("name", "employee.name.unique", "Employee name must be unique")
+            return
+        }
+        employee.validate()
+        if (!employee.hasErrors()) {
+            employee.save(flush: true)
+        }
     }
 
-    Employee saveEmployee(Employee emp) {
-        return emp.save(flush: true, failOnError: true)
+    // Update employee
+    void update(Employee employee) {
+        if (!isNameUnique(employee.name, employee.id)) {
+            employee.errors.rejectValue("name", "employee.name.unique", "Employee name must be unique")
+            return
+        }
+        employee.validate()
+        if (!employee.hasErrors()) {
+            employee.save(flush: true)
+        }
     }
 
-    boolean deleteEmployee(Long id) {
-        def emp = Employee.get(id)
+    // Delete employee by id, return true if deleted
+    boolean delete(Long id) {
+        Employee emp = Employee.get(id)
         if (emp) {
-            // Delete related EmployeeDeviceAssignment records first
-            def assignments = EmployeeDeviceAssignment.findAllByEmployee(emp)
-            assignments*.delete(flush: true)
-
-            // Now delete the employee
             emp.delete(flush: true)
             return true
         }
-        return false
+        false
     }
 }
