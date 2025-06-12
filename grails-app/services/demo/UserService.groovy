@@ -1,24 +1,33 @@
 package demo
 
-import grails.gorm.transactions.Transactional
-import org.springframework.security.crypto.bcrypt.BCrypt
+import org.mindrot.jbcrypt.BCrypt
 
-@Transactional
 class UserService {
 
-    User registerUser(String username, String password, String role) {
-        if (User.findByUsername(username)) return null
+    // Find by username, then check password with BCrypt
+    def authenticate(String username, String password) {
+        def user = User.findByUsername(username)
+        println "AUTH: username=${username}, foundUser=${user ? user.username : null}"
+        if (user) {
+            println "AUTH: dbHash=${user.password}"
+            println "AUTH: bcryptMatch=" + org.mindrot.jbcrypt.BCrypt.checkpw(password, user.password)
+        }
+        if (user && org.mindrot.jbcrypt.BCrypt.checkpw(password, user.password)) {
+            println "AUTH: LOGIN SUCCESS"
+            return user
+        }
+        println "AUTH: LOGIN FAIL"
+        return null
+    }
+
+    def registerUser(String username, String password, String role) {
+        if (User.findByUsername(username)) {
+            return null // Username already exists
+        }
+        // Hash the password before saving!
         String hashed = BCrypt.hashpw(password, BCrypt.gensalt())
         def user = new User(username: username, password: hashed, role: role, enabled: true)
         user.save(flush: true)
-        return user
-    }
-
-    User authenticate(String username, String password) {
-        def user = User.findByUsername(username)
-        if (user && BCrypt.checkpw(password, user.password)) {
-            return user
-        }
-        return null
+        return user.hasErrors() ? null : user
     }
 }

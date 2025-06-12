@@ -34,7 +34,7 @@ class EmployeeService {
         }
         employee.validate()
         if (employee.hasErrors()) return false
-        employee.save(flush: true)
+        employee.save(flush: true) // Save ONCE!
         assignDevices(employee, deviceNames)
         return true
     }
@@ -50,7 +50,7 @@ class EmployeeService {
         }
         employee.validate()
         if (employee.hasErrors()) return false
-        employee.save(flush: true)
+        employee.save(flush: true) // Save ONCE!
         assignDevices(employee, deviceNames)
         return true
     }
@@ -59,8 +59,9 @@ class EmployeeService {
      * Assigns devices: removes existing, then adds new.
      */
     void assignDevices(Employee employee, List<String> deviceNames) {
+        // Remove previous assignments
         DeviceAssignment.findAllByEmployee(employee)*.delete()
-        def uniqueDeviceNames = deviceNames ? new ArrayList(deviceNames).unique() : []
+        def uniqueDeviceNames = deviceNames ? deviceNames.toSet().toList() : []
         uniqueDeviceNames.each { deviceName ->
             def device = Device.findByName(deviceName)
             if (device) {
@@ -68,7 +69,6 @@ class EmployeeService {
             }
         }
     }
-
 
     /**
      * Deletes employee and assignments (once only).

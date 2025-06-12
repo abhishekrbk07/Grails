@@ -43,7 +43,7 @@ class UserController {
             return
         }
         // Generate JWT
-        String jwt = JwtUtil.generateToken(user)
+        String jwt = JwtUtils.generateToken(user)
         session.jwt = jwt // Save in session for UI testing (or set as cookie/header for SPA/API)
         session.userRole = user.role
         session.username = user.username

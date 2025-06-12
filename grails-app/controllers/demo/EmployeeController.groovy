@@ -16,7 +16,6 @@ class EmployeeController {
         render view: 'index', model: [employeeList: employeeList]
     }
 
-    // Pie chart action: employees by department
     def pieChart() {
         def deptCountMap = Department.list().collectEntries { dept ->
             [(dept.name): dept.employees?.size() ?: 0]
@@ -25,6 +24,11 @@ class EmployeeController {
     }
 
     def create() {
+        if (session.userRole != 'ADMIN') {
+            flash.error = "Not authorized."
+            redirect action: 'index'
+            return
+        }
         render view: 'create', model: [
                 employee: new Employee(),
                 departmentList: Department.list(),
@@ -33,6 +37,11 @@ class EmployeeController {
     }
 
     def save() {
+        if (session.userRole != 'ADMIN') {
+            flash.error = "Not authorized."
+            redirect action: 'index'
+            return
+        }
         def cleanParams = params.findAll { it.key != 'department' && it.key != 'devices' }
         def employee = new Employee(cleanParams)
         def dept = Department.findByName(params.department)
@@ -64,6 +73,11 @@ class EmployeeController {
     }
 
     def edit(Long id) {
+        if (session.userRole != 'ADMIN') {
+            flash.error = "Not authorized."
+            redirect action: 'index'
+            return
+        }
         def employee = employeeService.getById(id)
         if (!employee) {
             flash.error = "Employee not found."
@@ -80,6 +94,11 @@ class EmployeeController {
     }
 
     def update(Long id) {
+        if (session.userRole != 'ADMIN') {
+            flash.error = "Not authorized."
+            redirect action: 'index'
+            return
+        }
         def employee = employeeService.getById(id)
         if (!employee) {
             flash.error = "Employee not found."
@@ -120,6 +139,11 @@ class EmployeeController {
     }
 
     def delete(Long id) {
+        if (session.userRole != 'ADMIN') {
+            flash.error = "Not authorized."
+            redirect action: 'index'
+            return
+        }
         def deleted = employeeService.delete(id)
         if (!deleted) {
             flash.error = "Could not delete employee."
@@ -150,10 +174,7 @@ class EmployeeController {
             ws.getCells().get(idx + 1, 0).putValue(emp.name)
             ws.getCells().get(idx + 1, 1).putValue(emp.designation)
             ws.getCells().get(idx + 1, 2).putValue(emp.department?.name ?: "")
-            def joinDateString = ""
-            if (emp.joiningDate) {
-                joinDateString = sdf.format(emp.joiningDate)
-            }
+            def joinDateString = emp.joiningDate ? sdf.format(emp.joiningDate) : ""
             ws.getCells().get(idx + 1, 3).putValue(joinDateString)
             def devices = emp.deviceAssignments?.collect { it.device?.name }?.join(", ") ?: ""
             ws.getCells().get(idx + 1, 4).putValue(devices)

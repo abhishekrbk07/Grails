@@ -67,6 +67,7 @@ dependencies {
     implementation "org.graalvm.js:js:22.3.0"
     implementation "com.aspose:aspose-cells:24.4"
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'org.mindrot:jbcrypt:0.4'
     implementation 'org.springframework.security:spring-security-crypto:5.8.5'
     compileOnly "io.micronaut:micronaut-inject-groovy"
     console "org.grails:grails-console"

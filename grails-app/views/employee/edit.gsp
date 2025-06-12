@@ -95,6 +95,13 @@
     </style>
 </head>
 <body>
+<g:if test="${session.userRole != 'ADMIN'}">
+    <div class="alert alert-danger mt-5 text-center">Not authorized.</div>
+    <div class="text-center mt-3">
+        <g:link controller="employee" action="index" class="btn btn-secondary">Back to List</g:link>
+    </div>
+    <% return %>
+</g:if>
 <div class="card p-4">
     <h2 class="mb-4 text-center">Edit Employee</h2>
     <g:if test="${flash.error}">

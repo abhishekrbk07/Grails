@@ -164,13 +164,47 @@
     @media (max-width: 600px) {
         .floating-chart-btn { right: 10px; bottom: 16px; font-size: .99rem; padding: 12px 16px 12px 13px; }
     }
+
+    .export-btn {
+        background: linear-gradient(90deg, #20c997 10%, #4e5bf2 90%);
+        color: #fff !important;
+        border: none;
+        border-radius: 16px;
+        padding: 11px 24px;
+        font-size: 1.04rem;
+        font-family: 'Poppins',sans-serif;
+        font-weight: 700;
+        margin-right: 8px;
+        box-shadow: 0 2px 12px #5a8dee2d;
+        transition: background 0.16s, box-shadow 0.18s, transform 0.15s;
+        display: inline-block;
+    }
+    .export-btn:hover {
+        background: linear-gradient(90deg, #4e5bf2 10%, #20c997 90%);
+        color: #fff;
+        box-shadow: 0 6px 20px #20c9972d;
+        transform: translateY(-2px) scale(1.045);
+        text-decoration: none;
+    }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header-bar">
         <h2>Employee Management System</h2>
-        <g:link controller="employee" action="create" class="add-btn text-decoration-none">+ Add Employee</g:link>
+        <div class="d-flex align-items-center gap-3">
+            <g:link controller="employee" action="exportExcel" class="export-btn text-decoration-none">
+                <span style="display:inline-flex;align-items:center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#fff" class="me-1" viewBox="0 0 24 24">
+                        <path d="M19 2H8c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 10H8V4h11v8zm-7 6v-2H8c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2v-6c0-1.1-.9-2-2-2h-4zm0 2h4v6H8v-6h4z"/>
+                    </svg>
+                    Export to Excel
+                </span>
+            </g:link>
+            <g:if test="${session.userRole == 'ADMIN'}">
+                <g:link controller="employee" action="create" class="add-btn text-decoration-none ms-2">+ Add Employee</g:link>
+            </g:if>
+        </div>
     </div>
     <div class="row">
         <g:each in="${employeeList}" var="emp">
@@ -193,12 +227,15 @@
                             <span style="color:#c53c3c;">None</span>
                         </g:else>
                     </div>
-                    <div class="emp-actions">
-                        <g:link controller="employee" action="edit" id="${emp.id}" class="btn btn-edit me-1">Edit</g:link>
-                        <g:form controller="employee" action="delete" id="${emp.id}" method="POST" style="display:inline;">
-                            <button type="submit" class="btn btn-delete" onclick="return confirm('Delete this employee?');">Delete</button>
-                        </g:form>
-                    </div>
+                <!-- Only admin can edit/delete -->
+                    <g:if test="${session.userRole == 'ADMIN'}">
+                        <div class="emp-actions">
+                            <g:link controller="employee" action="edit" id="${emp.id}" class="btn btn-edit me-1">Edit</g:link>
+                            <g:form controller="employee" action="delete" id="${emp.id}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-delete" onclick="return confirm('Delete this employee?');">Delete</button>
+                            </g:form>
+                        </div>
+                    </g:if>
                 </div>
             </div>
         </g:each>
@@ -208,9 +245,5 @@
     <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="#fff" class="me-2" viewBox="0 0 16 16"><path d="M15.985 8.5A7.5 7.5 0 1 1 8 .015V8.5h7.485z"/><path d="M8 1a7 7 0 1 0 7 7H8V1z" fill="#ffc463"/></svg>
     View Department Chart
 </a>
-<g:link controller="employee" action="exportExcel" class="export-btn text-decoration-none ms-2">
-    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#fff" class="me-1" viewBox="0 0 24 24"><path d="M19 2H8c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 10H8V4h11v8zm-7 6v-2H8c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2v-6c0-1.1-.9-2-2-2h-4zm0 2h4v6H8v-6h4z"/></svg>
-    Export to Excel
-</g:link>
 </body>
 </html>

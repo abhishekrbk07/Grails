@@ -1,8 +1,5 @@
 package demo
 
-import grails.gorm.annotation.Entity
-
-@Entity
 class User {
     String username
     String password // hashed
@@ -16,5 +13,15 @@ class User {
         password blank: false, maxSize: 255
         role inList: ['ADMIN', 'EMPLOYEE'], blank: false
         enabled nullable: false
+    }
+
+    static mapping = {
+        table '`user`'
+        username column: 'username'
+        password column: 'password'
+        role column: 'role'
+        enabled column: 'enabled'
+        dateCreated column: 'date_created'
+        lastUpdated column: 'last_updated'
     }
 }

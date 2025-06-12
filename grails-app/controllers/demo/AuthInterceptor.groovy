@@ -12,7 +12,7 @@ class AuthInterceptor {
             return false
         }
         // Optionally, validate JWT again
-        def claims = JwtUtil.validateToken(session.jwt as String)
+        def claims = JwtUtils.validateToken(session.jwt as String)
         if (!claims) {
             session.invalidate()
             redirect(controller: "user", action: "login")

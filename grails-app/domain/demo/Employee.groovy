@@ -16,7 +16,7 @@ class Employee {
     }
 
     static mapping = {
-        version false  // If you don't want a version column
+        version false
     }
 
     String toString() { name }
