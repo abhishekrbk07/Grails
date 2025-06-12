@@ -2,6 +2,9 @@ package demo
 
 import org.mindrot.jbcrypt.BCrypt
 
+import grails.gorm.transactions.Transactional
+
+@Transactional
 class UserService {
 
     // Find by username, then check password with BCrypt
