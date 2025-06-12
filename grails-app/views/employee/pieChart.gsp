@@ -78,14 +78,23 @@
         &#8592; Back to Employees
     </a>
     <div id="deptPieChart" style="height: 370px; margin-top: 32px;"></div>
-</div>
-<script>
+</div><script>
     document.addEventListener('DOMContentLoaded', function () {
+        var dataPoints = [
+            <g:set var="count" value="${0}"/>
+            <g:each in="${deptCountMap}" var="entry">
+            <g:if test="${entry.value > 0}">
+            { name: "${entry.key}", y: ${entry.value} }<g:if test="${count < deptCountMap.findAll{ it.value > 0 }.size() - 1}">,</g:if>
+            <g:set var="count" value="${count + 1}"/>
+            </g:if>
+            </g:each>
+        ];
+        if (dataPoints.length === 0) {
+            document.getElementById('deptPieChart').innerHTML = "<div class='alert alert-warning'>No data available to display chart.</div>";
+            return;
+        }
         Highcharts.chart('deptPieChart', {
-            chart: {
-                type: 'pie',
-                backgroundColor: 'transparent'
-            },
+            chart: { type: 'pie', backgroundColor: 'transparent' },
             title: { text: null },
             tooltip: { pointFormat: '<b>{point.y} Employees</b> ({point.percentage:.1f}%)' },
             plotOptions: {
@@ -104,11 +113,7 @@
             series: [{
                 name: 'Employees',
                 colorByPoint: true,
-                data: [
-                    <g:each in="${deptCountMap}" var="entry" status="i">
-                    { name: "${entry.key}", y: ${entry.value} }<g:if test="${i < deptCountMap.size()-1}">,</g:if>
-                    </g:each>
-                ]
+                data: dataPoints
             }]
         });
     });

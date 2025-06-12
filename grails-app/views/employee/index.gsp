@@ -218,7 +218,7 @@
                     <div class="emp-detail"><b>Joining Date:</b> <g:formatDate date="${emp.joiningDate}" format="yyyy-MM-dd"/></div>
                     <div class="emp-detail">
                         <b>Devices:</b>
-                        <g:if test="${emp.deviceAssignments}">
+                        <g:if test="${emp.deviceAssignments && emp.deviceAssignments.size() > 0}">
                             <g:each in="${emp.deviceAssignments}" var="da" status="i">
                                 ${da.device?.name}<g:if test="${i < emp.deviceAssignments.size()-1}">, </g:if>
                             </g:each>

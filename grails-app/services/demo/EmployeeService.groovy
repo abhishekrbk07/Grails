@@ -8,7 +8,10 @@ class EmployeeService {
     List<Employee> listAll() {
         Employee.createCriteria().list {
             fetchMode('deviceAssignments', org.hibernate.FetchMode.JOIN)
-        }
+            projections {
+                distinct('id')
+            }
+        }.collect { Employee.get(it) }
     }
 
     Employee getById(Long id) {
@@ -65,7 +68,7 @@ class EmployeeService {
         uniqueDeviceNames.each { deviceName ->
             def device = Device.findByName(deviceName)
             if (device) {
-                new DeviceAssignment(employee: employee, device: device).save()
+                new DeviceAssignment(employee: employee, device: device).save(flush: true)
             }
         }
     }

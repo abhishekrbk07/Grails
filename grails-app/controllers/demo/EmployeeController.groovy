@@ -59,7 +59,14 @@ class EmployeeController {
         employee.designation = sanitize(employee.designation)
 
         def selectedDevices = params.list('devices')
+        println "DEVICES TO ASSIGN FOR ${employee.name}: $selectedDevices"
+
         if (employeeService.create(employee, selectedDevices)) {
+            // After successful save, now it's safe to fetch assignments
+            def savedEmployee = Employee.findByName(employee.name) // Assumes name is unique
+            def assignedDevices = DeviceAssignment.findAllByEmployee(savedEmployee)*.device?.name
+            println "DEVICES ASSIGNED TO ${savedEmployee.name}: $assignedDevices"
+
             flash.message = "Employee created successfully."
             redirect action: 'index'
         } else {
@@ -71,6 +78,7 @@ class EmployeeController {
             ]
         }
     }
+
 
     def edit(Long id) {
         if (session.userRole != 'ADMIN') {
