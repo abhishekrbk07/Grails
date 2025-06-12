@@ -78,25 +78,26 @@
         &#8592; Back to Employees
     </a>
     <div id="deptPieChart" style="height: 370px; margin-top: 32px;"></div>
-</div><script>
+</div>
+<<script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Build Highcharts data array (excluding zero values)
         var dataPoints = [
-            <g:set var="count" value="${0}"/>
-            <g:each in="${deptCountMap}" var="entry">
-            <g:if test="${entry.value > 0}">
-            { name: "${entry.key}", y: ${entry.value} }<g:if test="${count < deptCountMap.findAll{ it.value > 0 }.size() - 1}">,</g:if>
-            <g:set var="count" value="${count + 1}"/>
-            </g:if>
+            <g:set var="entries" value="${deptCountMap.findAll{ it.value > 0 }}"/>
+            <g:each in="${entries}" var="entry" status="i">
+            { name: "${entry.key}", y: ${entry.value} }<g:if test="${i < entries.size()-1}">,</g:if>
             </g:each>
         ];
+
         if (dataPoints.length === 0) {
             document.getElementById('deptPieChart').innerHTML = "<div class='alert alert-warning'>No data available to display chart.</div>";
             return;
         }
+
         Highcharts.chart('deptPieChart', {
             chart: { type: 'pie', backgroundColor: 'transparent' },
             title: { text: null },
-            tooltip: { pointFormat: '<b>{point.y} Employees</b> ({point.percentage:.1f}%)' },
+            tooltip: { pointFormat: '<b>{point.name}</b>: {point.y} Employees ({point.percentage:.1f}%)' },
             plotOptions: {
                 pie: {
                     allowPointSelect: true,
@@ -104,12 +105,29 @@
                     borderRadius: 10,
                     dataLabels: {
                         enabled: true,
-                        format: '<b>{point.name}</b>: {point.y}',
-                        style: { fontFamily: 'Poppins,sans-serif', fontWeight: '700', fontSize: '1.04em' }
-                    }
+                        format: '<span style=\"font-weight:800; font-size:1.03em\">{point.name}</span>: <b>{point.y}</b>',
+                        style: {
+                            color: '#263159',
+                            fontFamily: 'Poppins,Inter,sans-serif',
+                            fontWeight: '700',
+                            textOutline: '0px',
+                            textShadow: false
+                        },
+                        // Make all labels visible, even for small slices
+                        distance: 30,
+                        connectorShape: 'crookedLine',
+                        filter: { property: 'percentage', operator: '>', value: 0 }
+                    },
+                    showInLegend: true
                 }
             },
             colors: ['#5a8dee','#4e5bf2','#ff7f50','#f8b739','#20c997','#f84646','#a084e8'],
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                itemStyle: { fontWeight: '700', fontFamily: 'Poppins,sans-serif', fontSize: '1.02em' }
+            },
             series: [{
                 name: 'Employees',
                 colorByPoint: true,
