@@ -204,6 +204,8 @@
             <g:if test="${session.userRole == 'ADMIN'}">
                 <g:link controller="employee" action="create" class="add-btn text-decoration-none ms-2">+ Add Employee</g:link>
             </g:if>
+            <g:link controller="user" action="logout" class="add-btn text-decoration-none" style="background:linear-gradient(90deg, #f53737 20%, #f5706b 80%);">⎋ Logout</g:link>
+        </div>
         </div>
     </div>
     <div class="row">
