@@ -19,23 +19,12 @@ class EmployeeService {
         Employee.get(id)
     }
 
-    boolean isNameUnique(String name, Long excludeId = null) {
-        if (excludeId) {
-            Employee.countByNameAndIdNotEqual(name, excludeId) == 0
-        } else {
-            Employee.countByName(name) == 0
-        }
-    }
 
     /**
      * Save a new employee and assign devices.
      * Returns true if success, false if validation error.
      */
     boolean create(Employee employee, List<String> deviceNames) {
-        if (!isNameUnique(employee.name)) {
-            employee.errors.rejectValue("name", "employee.name.unique", "Employee name must be unique")
-            return false
-        }
         employee.validate()
         if (employee.hasErrors()) return false
         employee.save(flush: true) // Save ONCE!
@@ -48,10 +37,6 @@ class EmployeeService {
      * Returns true if success, false if validation error.
      */
     boolean update(Employee employee, List<String> deviceNames) {
-        if (!isNameUnique(employee.name, employee.id)) {
-            employee.errors.rejectValue("name", "employee.name.unique", "Employee name must be unique")
-            return false
-        }
         employee.validate()
         if (employee.hasErrors()) return false
         employee.save(flush: true) // Save ONCE!
@@ -86,7 +71,7 @@ class EmployeeService {
         }
         false
     }
-    
+
     List<Employee> searchEmployees(String name, String departmentName) {
         def c = Employee.createCriteria()
         c.list {

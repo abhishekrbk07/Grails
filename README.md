@@ -68,3 +68,13 @@ enabled BOOLEAN DEFAULT TRUE,
 date_created DATETIME DEFAULT CURRENT_TIMESTAMP,
 last_updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+Users log in (via username/password, secured with JWT).
+
+Admins can add/edit/delete employees, assign them to a department, and give them devices (Laptop, Monitor, etc.).
+
+Each employee can have multiple devices.
+
+Everyone (depending on permissions) can view employees and their details.
+
+There’s search, export, and a department pie chart.
