@@ -3,8 +3,8 @@
 <html>
 <head>
     <title>Employee Management System</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <!-- Google Fonts: Poppins & Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600;800&display=swap" rel="stylesheet"/>
     <style>
     html, body {
@@ -25,6 +25,7 @@
         justify-content: space-between;
         align-items: center;
     }
+
     .header-bar h2 {
         font-family: 'Poppins', sans-serif;
         font-size: 2.1rem;
@@ -32,16 +33,30 @@
         margin: 0;
         letter-spacing: 0.5px;
     }
+    .export-btn, .add-btn {
+        border: none;
+        border-radius: 16px;
+        padding: 11px 24px;
+        font-size: 1.04rem;
+        font-family: 'Poppins',sans-serif;
+        font-weight: 700;
+        box-shadow: 0 2px 12px #5a8dee2d;
+        margin-left: 0.5rem;
+        margin-bottom: 0.6rem;
+    }
+    .export-btn {
+        background: linear-gradient(90deg, #20c997 10%, #4e5bf2 90%);
+        color: #fff !important;
+        transition: background 0.16s, box-shadow 0.18s, transform 0.15s;
+    }
+    .export-btn:hover {
+        background: linear-gradient(90deg, #4e5bf2 10%, #20c997 90%);
+        box-shadow: 0 6px 20px #20c9972d;
+        transform: translateY(-2px) scale(1.045);
+    }
     .add-btn {
         background: linear-gradient(90deg, #ff7f50 15%, #4e5bf2 85%);
         color: #fff !important;
-        padding: 12px 32px;
-        border-radius: 16px;
-        border: none;
-        font-weight: 700;
-        font-family: 'Poppins', sans-serif;
-        font-size: 1.05rem;
-        box-shadow: 0 2px 12px #5a8dee2d;
         transition: background 0.2s, box-shadow 0.2s, transform 0.18s;
     }
     .add-btn:hover {
@@ -49,97 +64,147 @@
         box-shadow: 0 6px 20px #5a8dee3d;
         transform: translateY(-2px) scale(1.05);
     }
+    .logout-btn {
+        background: linear-gradient(90deg, #f53737 20%, #f5706b 80%);
+        color: #fff !important;
+        border: none;
+        margin-left: 0.5rem;
+    }
+    .logout-btn:hover {
+        background: linear-gradient(90deg, #f5706b 20%, #f53737 80%);
+    }
+    /* --------- Search Box --------- */
+    .search-section {
+        max-width: 760px;
+        margin: 0 auto 28px auto;
+        padding: 28px 20px 24px 20px;
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 4px 24px #d6e0fb55;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px 26px;
+        align-items: end;
+        justify-content: center;
+    }
+    .search-section label {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 700;
+        font-size: 1.08rem;
+        color: #4e5bf2;
+        margin-bottom: 7px;
+    }
+    .search-section .form-control,
+    .search-section .form-select {
+        border-radius: 11px;
+        font-size: 1.08rem;
+        font-weight: 500;
+        box-shadow: none;
+        border: 1.2px solid #b3b8ec;
+    }
+    .search-section .search-btn {
+        background: linear-gradient(90deg, #4e5bf2 60%, #5a8dee 100%);
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.09rem;
+        padding: 10px 40px 10px 18px;
+        border-radius: 11px;
+        box-shadow: 0 3px 14px #4e5bf225;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.15s, box-shadow 0.13s, transform 0.13s;
+    }
+    .search-section .search-btn:hover {
+        background: linear-gradient(90deg, #5a8dee 50%, #4e5bf2 100%);
+        transform: scale(1.035);
+    }
+    /* --------- Employee Card Grid --------- */
+    .emp-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+        gap: 32px 30px;
+        margin-bottom: 60px;
+        margin-top: 18px;
+        padding-left: 6px;
+        padding-right: 6px;
+    }
     .emp-card {
         background: #fff;
-        border-radius: 18px;
-        box-shadow: 0 8px 32px 0 #a7b9f233, 0 1.5px 3.5px #dee8fd;
-        padding: 30px 28px 23px 28px;
-        margin-bottom: 38px;
-        transition: box-shadow 0.21s, transform 0.15s;
-        position: relative;
-        overflow: hidden;
-        min-height: 240px;
+        border-radius: 22px;
+        box-shadow: 0 6px 28px #90a2d955, 0 2px 6px #dae6fa4d;
+        padding: 26px 24px 18px 24px;
+        transition: box-shadow 0.16s, transform 0.14s;
+        min-height: 210px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
     .emp-card:hover {
-        box-shadow: 0 16px 40px 0 #4054c979, 0 4px 18px #dbeafe;
-        transform: translateY(-6px) scale(1.02);
+        box-shadow: 0 16px 36px #4e5bf245, 0 4px 16px #b3c2f5;
+        transform: scale(1.025) translateY(-3px);
         z-index: 2;
+        cursor: pointer;
     }
     .emp-name {
-        font-size: 1.28rem;
-        font-weight: 700;
-        color: #334099;
+        font-size: 1.14rem;
+        font-weight: 800;
+        color: #32419c;
         font-family: 'Poppins', sans-serif;
-        margin-bottom: 0.15rem;
+        margin-bottom: 3px;
+        text-transform: capitalize;
+        letter-spacing: 0.01em;
+    }
+    .emp-detail {
+        color: #405584;
+        font-size: 1.04rem;
+        margin-bottom: 5px;
+        font-weight: 500;
     }
     .badge.bg-light {
-        font-size: .98rem;
+        font-size: .97rem;
         color: #5a8dee !important;
         background: #f3f6ff !important;
         font-weight: 600;
         border-radius: 8px;
         padding: 4px 15px;
-        margin-left: 0.33rem;
-        letter-spacing: .3px;
+        margin-left: 0.28rem;
         font-family: 'Inter', sans-serif;
     }
-    .emp-detail {
-        color: #495583;
-        font-size: 1.04rem;
-        margin-bottom: 8px;
-        font-weight: 500;
-        letter-spacing: .2px;
-    }
     .emp-actions {
-        margin-top: 22px;
+        margin-top: 14px;
         display: flex;
-        gap: 12px;
+        gap: 9px;
     }
     .emp-actions .btn {
-        border-radius: 9px;
-        font-size: 1.03rem;
+        border-radius: 10px;
+        font-size: 1.02rem;
         font-weight: 600;
-        font-family: 'Poppins', sans-serif;
-        padding: 7px 22px;
-        box-shadow: 0 2px 8px #e3e9fc50;
-        transition: background 0.18s, box-shadow 0.18s, transform 0.14s;
+        padding: 7px 20px;
+        transition: background 0.17s, box-shadow 0.15s, transform 0.11s;
     }
-    .emp-actions .btn-edit {
-        background: linear-gradient(90deg, #4e5bf2 60%, #5a8dee 100%);
-        color: #fff;
-        border: none;
+    .emp-actions .btn-edit { background: linear-gradient(90deg, #4e5bf2 60%, #5a8dee 100%); color: #fff; }
+    .emp-actions .btn-edit:hover { background: linear-gradient(90deg, #5a8dee 30%, #4e5bf2 90%);}
+    .emp-actions .btn-delete { background: linear-gradient(93deg, #f84646 70%, #ff9980 100%); color: #fff; }
+    .emp-actions .btn-delete:hover { background: linear-gradient(90deg, #ff9980 10%, #f84646 90%); }
+    /* Responsive Tweaks */
+    @media (max-width: 1000px) {
+        .header-bar { flex-direction: column; align-items: stretch; }
     }
-    .emp-actions .btn-edit:hover {
-        background: linear-gradient(90deg, #5a8dee 30%, #4e5bf2 90%);
-        box-shadow: 0 3px 14px #4e5bf258;
-        transform: scale(1.07);
+    @media (max-width: 900px) {
+        .emp-grid { gap: 22px 10px; }
+        .emp-card { padding: 18px 10px 12px 14px; }
     }
-    .emp-actions .btn-delete {
-        background: linear-gradient(93deg, #f84646 70%, #ff9980 100%);
-        color: #fff;
-        border: none;
+    @media (max-width: 650px) {
+        .emp-grid { grid-template-columns: 1fr; gap: 14px 0; }
+        .emp-card { padding: 13px 6px 10px 9px; min-height: 150px; }
+        .header-bar { padding: 14px 8px; }
     }
-    .emp-actions .btn-delete:hover {
-        background: linear-gradient(90deg, #ff9980 10%, #f84646 90%);
-        box-shadow: 0 3px 14px #f8464648;
-        transform: scale(1.07);
-    }
-    .emp-card::before {
-        content: "";
-        position: absolute;
-        right: -46px; top: -56px;
-        width: 150px; height: 150px;
-        background: radial-gradient(circle, #e3e9fc 80%, transparent 100%);
-        opacity: 0.55;
-        z-index: 1;
-    }
-    .emp-card .emp-name, .emp-card .emp-detail, .emp-card .badge, .emp-card .emp-actions { position: relative; z-index: 2; }
-
-    /* Floating Chart Button Styles */
     .floating-chart-btn {
         position: fixed;
-        right: 36px;
-        bottom: 38px;
+        right: 38px;
+        bottom: 34px;
         z-index: 300;
         display: flex;
         align-items: center;
@@ -154,6 +219,8 @@
         border: none;
         transition: background 0.16s, transform 0.13s, box-shadow 0.13s;
         text-decoration: none;
+        letter-spacing: 0.05em;
+        gap: 10px;
     }
     .floating-chart-btn:hover {
         background: linear-gradient(93deg, #4e5bf2 60%, #ff7f50 100%);
@@ -161,38 +228,18 @@
         box-shadow: 0 12px 32px #a2b6ee50;
         color: #fff !important;
     }
-    @media (max-width: 600px) {
+    @media (max-width: 700px) {
         .floating-chart-btn { right: 10px; bottom: 16px; font-size: .99rem; padding: 12px 16px 12px 13px; }
     }
 
-    .export-btn {
-        background: linear-gradient(90deg, #20c997 10%, #4e5bf2 90%);
-        color: #fff !important;
-        border: none;
-        border-radius: 16px;
-        padding: 11px 24px;
-        font-size: 1.04rem;
-        font-family: 'Poppins',sans-serif;
-        font-weight: 700;
-        margin-right: 8px;
-        box-shadow: 0 2px 12px #5a8dee2d;
-        transition: background 0.16s, box-shadow 0.18s, transform 0.15s;
-        display: inline-block;
-    }
-    .export-btn:hover {
-        background: linear-gradient(90deg, #4e5bf2 10%, #20c997 90%);
-        color: #fff;
-        box-shadow: 0 6px 20px #20c9972d;
-        transform: translateY(-2px) scale(1.045);
-        text-decoration: none;
-    }
     </style>
 </head>
 <body>
 <div class="container">
+    <!-- Header Bar with Action Buttons -->
     <div class="header-bar">
         <h2>Employee Management System</h2>
-        <div class="d-flex align-items-center gap-3">
+        <div class="d-flex align-items-center flex-wrap gap-2">
             <g:link controller="employee" action="exportExcel" class="export-btn text-decoration-none">
                 <span style="display:inline-flex;align-items:center;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#fff" class="me-1" viewBox="0 0 24 24">
@@ -204,32 +251,57 @@
             <g:if test="${session.userRole == 'ADMIN'}">
                 <g:link controller="employee" action="create" class="add-btn text-decoration-none ms-2">+ Add Employee</g:link>
             </g:if>
-            <g:link controller="user" action="logout" class="add-btn text-decoration-none" style="background:linear-gradient(90deg, #f53737 20%, #f5706b 80%);">⎋ Logout</g:link>
-        </div>
+            <g:link controller="user" action="logout" class="add-btn logout-btn text-decoration-none">⎋ Logout</g:link>
         </div>
     </div>
-    <div class="row">
-        <g:each in="${employeeList}" var="emp">
-            <div class="col-lg-4 col-md-6 col-12">
+
+    <!-- Search Section -->
+    <form method="get" class="search-section" style="margin-bottom: 0;">
+        <div style="flex:2; min-width:210px;">
+            <label for="employeeName">Employee Name</label>
+            <input type="text" name="employeeName" id="employeeName" class="form-control" value="${params.employeeName ?: ''}" placeholder="Search by name" autocomplete="off"/>
+        </div>
+        <div style="flex:2; min-width:180px;">
+            <label for="department">Department</label>
+            <select name="department" id="department" class="form-select">
+                <option value="">All Departments</option>
+                <g:each in="${departmentList}" var="dept">
+                    <option value="${dept.name}" <g:if test="${params.department == dept.name}">selected</g:if>>${dept.name}</option>
+                </g:each>
+            </select>
+        </div>
+        <div style="flex:1; min-width:110px;">
+            <button type="submit" class="search-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="#fff" viewBox="0 0 20 20"><path d="M12.9 14.32a8 8 0 1 1 1.41-1.41l5.39 5.38-1.4 1.41-5.4-5.39zM8 14a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"/></svg>
+                Search
+            </button>
+        </div>
+    </form>
+
+    <!-- Employee Cards Grid -->
+    <div class="emp-grid">
+        <g:if test="${employeeList && employeeList.size() > 0}">
+            <g:each in="${employeeList}" var="emp">
                 <div class="emp-card">
-                    <div class="emp-name">
-                        ${emp.name}
-                        <span class="badge bg-light">${emp.department?.name}</span>
+                    <div>
+                        <div class="emp-name">
+                            ${emp.name}
+                            <span class="badge bg-light">${emp.department?.name}</span>
+                        </div>
+                        <div class="emp-detail"><b>Designation:</b> ${emp.designation}</div>
+                        <div class="emp-detail"><b>Joining Date:</b> <g:formatDate date="${emp.joiningDate}" format="yyyy-MM-dd"/></div>
+                        <div class="emp-detail">
+                            <b>Devices:</b>
+                            <g:if test="${emp.deviceAssignments && emp.deviceAssignments.size() > 0}">
+                                <g:each in="${emp.deviceAssignments}" var="da" status="i">
+                                    ${da.device?.name}<g:if test="${i < emp.deviceAssignments.size()-1}">, </g:if>
+                                </g:each>
+                            </g:if>
+                            <g:else>
+                                <span style="color:#c53c3c;">None</span>
+                            </g:else>
+                        </div>
                     </div>
-                    <div class="emp-detail"><b>Designation:</b> ${emp.designation}</div>
-                    <div class="emp-detail"><b>Joining Date:</b> <g:formatDate date="${emp.joiningDate}" format="yyyy-MM-dd"/></div>
-                    <div class="emp-detail">
-                        <b>Devices:</b>
-                        <g:if test="${emp.deviceAssignments && emp.deviceAssignments.size() > 0}">
-                            <g:each in="${emp.deviceAssignments}" var="da" status="i">
-                                ${da.device?.name}<g:if test="${i < emp.deviceAssignments.size()-1}">, </g:if>
-                            </g:each>
-                        </g:if>
-                        <g:else>
-                            <span style="color:#c53c3c;">None</span>
-                        </g:else>
-                    </div>
-                <!-- Only admin can edit/delete -->
                     <g:if test="${session.userRole == 'ADMIN'}">
                         <div class="emp-actions">
                             <g:link controller="employee" action="edit" id="${emp.id}" class="btn btn-edit me-1">Edit</g:link>
@@ -239,12 +311,22 @@
                         </div>
                     </g:if>
                 </div>
+            </g:each>
+        </g:if>
+        <g:else>
+            <div style="grid-column: 1/-1; text-align: center; color: #5669d6; font-size: 1.2rem; margin-top: 32px;">
+                No employees found.
             </div>
-        </g:each>
+        </g:else>
     </div>
 </div>
-<a href="${createLink(controller:'employee', action:'pieChart')}" class="floating-chart-btn" title="View Employee Department Pie Chart">
-    <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="#fff" class="me-2" viewBox="0 0 16 16"><path d="M15.985 8.5A7.5 7.5 0 1 1 8 .015V8.5h7.485z"/><path d="M8 1a7 7 0 1 0 7 7H8V1z" fill="#ffc463"/></svg>
+<a href="${createLink(controller:'employee', action:'pieChart')}"
+   class="floating-chart-btn"
+   title="View Employee Department Pie Chart">
+    <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="#fff" class="me-2" viewBox="0 0 16 16">
+        <path d="M15.985 8.5A7.5 7.5 0 1 1 8 .015V8.5h7.485z"/>
+        <path d="M8 1a7 7 0 1 0 7 7H8V1z" fill="#ffc463"/>
+    </svg>
     View Department Chart
 </a>
 </body>

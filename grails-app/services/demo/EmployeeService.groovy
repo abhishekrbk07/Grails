@@ -6,12 +6,13 @@ import grails.gorm.transactions.Transactional
 class EmployeeService {
 
     List<Employee> listAll() {
-        Employee.createCriteria().list {
-            fetchMode('deviceAssignments', org.hibernate.FetchMode.JOIN)
-            projections {
-                distinct('id')
-            }
-        }.collect { Employee.get(it) }
+        def hql = """
+        select distinct e
+        from Employee e
+        left join fetch e.deviceAssignments da
+        order by e.id
+    """
+        Employee.executeQuery(hql)
     }
 
     Employee getById(Long id) {
@@ -85,4 +86,24 @@ class EmployeeService {
         }
         false
     }
+    
+    List<Employee> searchEmployees(String name, String departmentName) {
+        def c = Employee.createCriteria()
+        c.list {
+            if (name) {
+                ilike('name', "%${name}%")  // Case-insensitive partial match
+            }
+            if (departmentName) {
+                department {
+                    eq('name', departmentName)
+                }
+            }
+            fetchMode('deviceAssignments', org.hibernate.FetchMode.JOIN)
+            order('id', 'asc')
+            projections {
+                distinct('id')
+            }
+        }.collect { Employee.get(it) }
+    }
+
 }

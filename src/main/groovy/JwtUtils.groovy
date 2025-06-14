@@ -24,7 +24,7 @@ class JwtUtils {
                 .setExpiration(new Date(expiry))
                 .signWith(SignatureAlgorithm.HS256, getSecretKeyBytes())
                 .compact()
-        // Log JWT token for debugging
+
         println "JWT GENERATED: $jwt"
         return jwt
     }

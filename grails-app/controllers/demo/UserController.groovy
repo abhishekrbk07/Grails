@@ -49,14 +49,8 @@ class UserController {
         session.userRole = user.role
         session.username = user.username
 
-        // For debugging: decode claims and log breakdown
-        def claims = JwtUtils.validateToken(jwt)
-        if (claims) {
-            println "--- JWT CLAIMS BREAKDOWN ---"
-            claims.each { k, v -> println "$k: $v" }
-            println "----------------------------"
-        }
 
+        def claims = JwtUtils.validateToken(jwt)
         flash.message = "Welcome, ${user.username}!"
         redirect controller: 'employee', action: 'index'
     }

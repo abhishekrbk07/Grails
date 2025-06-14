@@ -2,7 +2,7 @@ package demo
 
 class User {
     String username
-    String password // hashed
+    String password
     String role // 'ADMIN' or 'EMPLOYEE'
     Boolean enabled = true
     Date dateCreated
@@ -15,13 +15,4 @@ class User {
         enabled nullable: false
     }
 
-    static mapping = {
-        table '`user`'
-        username column: 'username'
-        password column: 'password'
-        role column: 'role'
-        enabled column: 'enabled'
-        dateCreated column: 'date_created'
-        lastUpdated column: 'last_updated'
-    }
 }

@@ -11,7 +11,6 @@ class AuthInterceptor {
             redirect(controller: "user", action: "login")
             return false
         }
-        // Optionally, validate JWT again
         def claims = JwtUtils.validateToken(session.jwt as String)
         JwtUtils.logClaims(claims, "in AuthInterceptor")
         if (!claims) {
@@ -19,10 +18,6 @@ class AuthInterceptor {
             redirect(controller: "user", action: "login")
             return false
         }
-        // Log the token claims for debugging
-        println "--- JWT CLAIMS IN INTERCEPTOR ---"
-        claims.each { k, v -> println "$k: $v" }
-        println "---------------------------------"
         true
     }
 

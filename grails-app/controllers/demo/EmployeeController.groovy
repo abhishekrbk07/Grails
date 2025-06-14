@@ -12,8 +12,18 @@ class EmployeeController {
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     def index() {
-        def employeeList = employeeService.listAll()
-        render view: 'index', model: [employeeList: employeeList]
+        String searchName = params.name?.trim()
+        String searchDept = params.department?.trim()
+
+        def departmentList = Department.list()
+
+        def employeeList = employeeService.searchEmployees(searchName, searchDept)
+
+        render (view: 'index', model: [
+                employeeList: employeeList,
+                departmentList: departmentList,
+                params: params
+        ])
     }
 
     def pieChart() {
@@ -62,7 +72,7 @@ class EmployeeController {
         println "DEVICES TO ASSIGN FOR ${employee.name}: $selectedDevices"
 
         if (employeeService.create(employee, selectedDevices)) {
-            // After successful save, now it's safe to fetch assignments
+            // After successful save, fetch assignments
             def savedEmployee = Employee.findByName(employee.name) // Assumes name is unique
             def assignedDevices = DeviceAssignment.findAllByEmployee(savedEmployee)*.device?.name
             println "DEVICES ASSIGNED TO ${savedEmployee.name}: $assignedDevices"
