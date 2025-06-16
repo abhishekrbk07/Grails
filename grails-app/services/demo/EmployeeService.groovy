@@ -76,7 +76,7 @@ class EmployeeService {
         def c = Employee.createCriteria()
         c.list {
             if (name) {
-                ilike('name', "%${name}%")  // Case-insensitive partial match
+                ilike('name', "%${name}%")  // Partial match, case-insensitive
             }
             if (departmentName) {
                 department {

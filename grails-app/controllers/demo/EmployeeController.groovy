@@ -12,7 +12,7 @@ class EmployeeController {
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     def index() {
-        String searchName = params.name?.trim()
+        String searchName = params.employeeName?.trim()
         String searchDept = params.department?.trim()
 
         def departmentList = Department.list()

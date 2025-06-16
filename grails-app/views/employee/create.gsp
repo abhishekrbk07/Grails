@@ -92,17 +92,49 @@
         font-size: 1.02rem;
         border-radius: 10px;
     }
+    .back-link-btn {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        background: #f4f8ff;
+        color: #4155be;
+        border: 2px solid #5a8dee;
+        font-weight: 700;
+        font-size: 1.09rem;
+        padding: .55rem 1.25rem;
+        border-radius: 13px;
+        transition: background .17s, box-shadow .17s, color .18s;
+        box-shadow: 0 2px 10px #c0c5ee28;
+    }
+
+    .back-link-btn:hover {
+        background: linear-gradient(90deg, #e3e9fc 80%, #dbeafe 100%);
+        color: #4e5bf2;
+        box-shadow: 0 4px 20px #4e5bf230;
+        border-color: #4e5bf2;
+        text-decoration: none;
+    }
+
+    .back-arrow {
+        font-size: 1.3em;
+        margin-right: 4px;
+        transform: translateY(-1px);
+    }
+
     </style>
 </head>
 <body>
 <g:if test="${session.userRole != 'ADMIN'}">
     <div class="alert alert-danger mt-5 text-center">Not authorized.</div>
-    <div class="text-center mt-3">
-        <g:link controller="employee" action="index" class="btn btn-secondary">Back to List</g:link>
-    </div>
     <% return %>
 </g:if>
 <div class="card p-4">
+    <div class="d-flex justify-content-start mb-3">
+        <g:link controller="employee" action="index" class="btn back-link-btn">
+            <span class="back-arrow">&#8592;</span>
+            Back to List
+        </g:link>
+    </div>
     <h2 class="mb-4 text-center">Add New Employee</h2>
     <g:if test="${flash.error}">
         <div class="alert alert-danger">${flash.error}</div>
