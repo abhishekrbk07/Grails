@@ -2,6 +2,7 @@ package demo
 
 class Employee {
     String name
+    String email
     String designation
     Date joiningDate
 
@@ -10,6 +11,7 @@ class Employee {
 
     static constraints = {
         name blank: false, maxSize: 100, matches: /^[a-zA-Z\s]+$/
+        email blank: false, email: true, unique: true
         designation blank: false, maxSize: 100
         joiningDate nullable: false
         department nullable: false

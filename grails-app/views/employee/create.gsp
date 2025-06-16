@@ -146,6 +146,11 @@
             <div class="invalid-feedback">Please enter a valid name (no special characters, no &lt; or &gt; allowed).</div>
         </div>
         <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" value="${employee?.email ?: ''}" required maxlength="100" class="form-control"/>
+            <div class="invalid-feedback">Please enter a valid email address.</div>
+        </div>
+        <div class="mb-3">
             <label class="form-label">Designation</label>
             <g:textField name="designation" value="${employee?.designation}" required="true" maxlength="100" class="form-control"/>
             <div class="invalid-feedback">Please enter the designation.</div>

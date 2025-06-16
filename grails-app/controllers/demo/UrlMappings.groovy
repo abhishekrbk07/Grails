@@ -15,6 +15,9 @@ class UrlMappings {
         "/logout"(controller: "user", action: "logout")
         "/doLogin"(controller: "user", action: "doLogin")
         "/saveRegister"(controller: "user", action: "saveRegister")
+        "/employee/azGrid"(controller: "employee", action: "azGrid")
+        "/employee/createUserFromEmployee/$id"(controller: "employee", action: "createUserFromEmployee")
+
         "/"(controller: 'employee', action: 'index')
         "500"(view: '/error')
         "404"(view: '/notFound')

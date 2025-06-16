@@ -5,6 +5,7 @@
     <title>Employee Management System</title>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600;800&display=swap" rel="stylesheet"/>
     <style>
     html, body {
@@ -228,6 +229,31 @@
         box-shadow: 0 12px 32px #a2b6ee50;
         color: #fff !important;
     }
+    .flash-fancy {
+        max-width: 440px;
+        min-width: 260px;
+        margin-top: 26px;
+        border-radius: 15px;
+        font-size: 1.09rem;
+        box-shadow: 0 6px 32px #4155be29, 0 1px 2px #dbeafe55;
+        padding: 13px 28px 13px 18px;
+        background: linear-gradient(90deg, #e3e9fc 60%, #f4f8ff 100%);
+        font-family: 'Poppins', 'Inter', sans-serif;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: all 0.16s;
+        opacity: 0.97;
+    }
+    .flash-fancy .fa-check-circle { color: #20c997; font-size: 1.36rem; }
+    .flash-fancy .fa-exclamation-triangle { color: #ff7f50; font-size: 1.36rem; }
+    .flash-fancy .btn-close { margin-left: auto; outline: none; }
+    @media (max-width: 600px) {
+        .flash-fancy { max-width: 98%; font-size: 1rem; padding: 11px 12px; }
+    }
+
     @media (max-width: 700px) {
         .floating-chart-btn { right: 10px; bottom: 16px; font-size: .99rem; padding: 12px 16px 12px 13px; }
     }
@@ -236,9 +262,25 @@
 </head>
 <body>
 <div class="container">
+    <div class="container">
+    <!-- Flash Messages -->
+        <g:if test="${flash.message}">
+            <div class="alert alert-success flash-fancy alert-dismissible fade show mx-auto" role="alert">
+                <i class="fa fa-check-circle me-2"></i>
+                <span>${flash.message}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </g:if>
+        <g:if test="${flash.error}">
+            <div class="alert alert-danger flash-fancy alert-dismissible fade show mx-auto" role="alert">
+                <i class="fa fa-exclamation-triangle me-2"></i>
+                <span>${flash.error}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </g:if>
     <!-- Header Bar with Action Buttons -->
     <div class="header-bar">
-        <h2>Employee Management System</h2>
+        <h2>EMS</h2>
         <div class="d-flex align-items-center flex-wrap gap-2">
             <g:link controller="employee" action="exportExcel" class="export-btn text-decoration-none">
                 <span style="display:inline-flex;align-items:center;">
@@ -246,6 +288,11 @@
                         <path d="M19 2H8c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 10H8V4h11v8zm-7 6v-2H8c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2v-6c0-1.1-.9-2-2-2h-4zm0 2h4v6H8v-6h4z"/>
                     </svg>
                     Export to Excel
+                </span>
+            </g:link>
+            <g:link controller="employee" action="agGrid" class="export-btn text-decoration-none me-2" style="background:linear-gradient(93deg,#4155be,#4e5bf2);">
+                <span style="display:inline-flex;align-items:center;">
+                    <i class="fa-solid fa-table-cells-large me-1"></i>
                 </span>
             </g:link>
             <g:if test="${session.userRole == 'ADMIN'}">
@@ -288,6 +335,7 @@
                             ${emp.name}
                             <span class="badge bg-light">${emp.department?.name}</span>
                         </div>
+                        <div class="emp-detail"><b>Email:</b> ${emp.email}</div>
                         <div class="emp-detail"><b>Designation:</b> ${emp.designation}</div>
                         <div class="emp-detail"><b>Joining Date:</b> <g:formatDate date="${emp.joiningDate}" format="yyyy-MM-dd"/></div>
                         <div class="emp-detail">
@@ -304,6 +352,9 @@
                     </div>
                     <g:if test="${session.userRole == 'ADMIN'}">
                         <div class="emp-actions">
+                            <g:link controller="employee" action="createUserFromEmployee" params="[id: emp.id]" class="btn btn-outline-primary me-2" title="Create User Account">
+                                <i class="fa-solid fa-user-plus"></i>
+                            </g:link>
                             <g:link controller="employee" action="edit" id="${emp.id}" class="btn btn-edit me-1">Edit</g:link>
                             <g:form controller="employee" action="delete" id="${emp.id}" method="POST" style="display:inline;">
                                 <button type="submit" class="btn btn-delete" onclick="return confirm('Delete this employee?');">Delete</button>

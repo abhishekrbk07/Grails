@@ -32,7 +32,13 @@
     <g:form controller="user" action="saveRegister" method="POST" class="needs-validation" novalidate="">
         <div class="mb-3">
             <label class="form-label">Username</label>
-            <input type="text" name="username" class="form-control" maxlength="64" required />
+            <input type="text" name="username" class="form-control" maxlength="64"
+                   minlength="3" pattern="^[^<>]{3,}$"
+                   title="At least 3 characters. &lt; and &gt; are not allowed."
+                   required />
+            <div class="invalid-feedback">
+                Username must be at least 3 characters and cannot contain &lt; or &gt;.
+            </div>
         </div>
         <div class="mb-3">
             <label class="form-label">Password</label>
@@ -52,5 +58,20 @@
         </div>
     </g:form>
 </div>
+<script>
+    (() => {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
 </body>
 </html>

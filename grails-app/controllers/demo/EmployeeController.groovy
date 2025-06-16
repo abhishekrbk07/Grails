@@ -3,6 +3,8 @@ package demo
 import com.aspose.cells.Workbook
 import com.aspose.cells.Worksheet
 import com.aspose.cells.SaveFormat
+import grails.gorm.transactions.Transactional
+
 import java.text.SimpleDateFormat
 
 class EmployeeController {
@@ -202,5 +204,48 @@ class EmployeeController {
         response.setHeader("Content-Disposition", "attachment; filename=employees.xlsx")
         workbook.save(response.outputStream, SaveFormat.XLSX)
         response.outputStream.flush()
+    }
+
+    @Transactional
+    def createUserFromEmployee(Long id) {
+        def employee = Employee.get(id)
+        if (!employee) {
+            flash.error = "Employee not found."
+            redirect action: 'index'
+            return
+        }
+        def email = employee.email
+        if (!email) {
+            flash.error = "Employee does not have an email."
+            redirect action: 'index'
+            return
+        }
+        if (User.findByUsername(email)) {
+            flash.error = "User already present!"
+            redirect action: 'index'
+            return
+        }
+        // Read defaults from config (application.yml)
+        def defaultPassword = grailsApplication.config.app.defaultUserPassword ?: 'root'
+        def defaultRole = grailsApplication.config.app.defaultUserRole ?: 'EMPLOYEE'
+        String hashed = org.mindrot.jbcrypt.BCrypt.hashpw(defaultPassword, org.mindrot.jbcrypt.BCrypt.gensalt())
+
+        def user = new User(username: email, password: hashed, role: defaultRole, enabled: true)
+        user.save(flush: true)
+        if (user.hasErrors()) {
+            flash.error = user.errors.allErrors.collect { it.defaultMessage }.join('<br>')
+        } else {
+            flash.message = "User created!"
+        }
+        redirect action: 'index'
+    }
+
+    def agGrid() {
+        def employees = Employee.createCriteria().list {
+            order("name", "asc")
+            fetchMode('deviceAssignments', org.hibernate.FetchMode.JOIN)
+            fetchMode('department', org.hibernate.FetchMode.JOIN)
+        }
+        render view: 'datagrid', model: [employees: employees]
     }
 }
